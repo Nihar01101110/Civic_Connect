@@ -7,9 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
 body {
-    font-family: 'Inter', sans-serif;
-    background: url('https://media.assettype.com/tnm/import/sites/all/var/www/images/SacredTrees-Photo-5.jpg?w=640&auto=format,compress') no-repeat center center fixed;
-    background-size: cover;
+     font-family: 'Inter', sans-serif;
+    /*background: url('https://media.assettype.com/tnm/import/sites/all/var/www/images/SacredTrees-Photo-5.jpg?w=640&auto=format,compress') no-repeat center center fixed;
+    background-size: cover; */
     color: #065f46; 
     min-height: 100vh;
     margin: 0;
@@ -27,12 +27,14 @@ body::before {
     z-index: -1;
 }
 
-.tab-content {
+/* ✅ Fix: only active tab-content shows */
+.user-tab-content {
     display: none;
 }
-.tab-content.active {
+.user-tab-content.active {
     display: block;
 }
+
 .tab-btn.active {
     border-color: #22c55e; 
     color: #22c55e;
@@ -69,7 +71,6 @@ body::before {
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
 }
 
-
 input[type="text"], textarea {
     background-color: #dcfce7; 
     border: 1px solid #bbf7d0;
@@ -102,7 +103,6 @@ label {
     font-weight: 500;
 }
 
-
 header, footer {
     background-color: rgba(34,197,94,0.85);
     color: #f0fdf4;
@@ -121,6 +121,14 @@ header a:hover, footer a:hover {
     position: relative;
 }
 
+/* ✅ Updated: ensure community feed images fit */
+#feed-container img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+}
 
 .chart-container {
     position: relative;
@@ -145,6 +153,14 @@ header a:hover, footer a:hover {
     pointer-events: none;
 }
 
+/* ✅ Updated: map image fits properly */
+#user-map-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.55;
+    border-radius: 1rem;
+}
 
 footer {
     padding: 2rem 0;
@@ -170,7 +186,6 @@ input[type="checkbox"] {
     accent-color: #f87171; 
 }
 
-
 @media (min-width: 1024px) {
     .grid-cols-1.lg\:grid-cols-3 {
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -179,6 +194,259 @@ input[type="checkbox"] {
         grid-column: span 2 / span 2;
     }
 }
+/* =========================
+   REPLACEMENT CSS — drop into <style> and replace your old CSS
+   - Adds images to community feed cards (nth-child mapping)
+   - Replaces map placeholder with provided map image
+   - Keeps your theme / layout / responsiveness intact
+   ========================= */
+
+/* --- Base / layout / body --- */
+:root{
+  --brand-green: #22c55e;
+  --brand-green-600: #16a34a;
+  --text-dark: #065f46;
+  --muted: #94a3b8;
+}
+* { box-sizing: border-box; }
+html,body { height: 100%; margin: 0; padding: 0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; color: var(--text-dark); }
+
+/* Keep a pleasant page background (you can change the URL back to your image if desired) */
+body {
+  /* background: url('https://media.assettype.com/tnm/import/sites/all/var/www/images/SacredTrees-Photo-5.jpg?w=1280&auto=format,compress') no-repeat center center fixed;
+  background-size: cover; */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* light overlay so content is legible on the photo bg */
+body::before{
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-color: rgba(252,252,252,0.22);
+  z-index: -1;
+}
+
+/* --- Header & tabs --- */
+header, footer { background-color: rgba(34,197,94,0.85); color: #f0fdf4; }
+header a, footer a { color: inherit; text-decoration: none; }
+header a:hover, footer a:hover { color: #bbf7d0; }
+
+.tab-btn { transition: all .18s ease; border-bottom-width: 2px; }
+.tab-btn:hover { border-color: #4ade80; color: var(--brand-green-600); }
+.tab-btn.active { border-color: var(--brand-green); color: var(--brand-green); }
+
+/* --- Map pin / popup used by map view --- */
+.map-pin {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid rgb(171,112,112);
+  transform: translate(-50%,-50%);
+  cursor: pointer;
+  transition: transform .15s ease;
+  z-index: 30;
+}
+.map-pin:hover { transform: translate(-50%,-50%) scale(1.4); }
+
+.map-popup {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  padding: 0.75rem;
+  color: var(--text-dark);
+  font-size: .9rem;
+  pointer-events: none;
+  z-index: 60;
+}
+
+/* --- Re-usable surface style (similar to your original .bg-white) --- */
+.surface {
+  background-color: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  transition: box-shadow .25s ease, transform .18s ease;
+}
+.surface:hover { box-shadow: 0 12px 24px rgba(0,0,0,0.12); }
+
+/* Keep your existing .bg-white utility but allow targeted overrides below */
+.bg-white {
+  background-color: #ffffff !important;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+}
+
+/* Inputs / focus styles */
+input[type="text"], textarea {
+  background-color: #dcfce7;
+  border: 1px solid #bbf7d0;
+  color: var(--text-dark);
+  border-radius: .75rem;
+  padding: .5rem .75rem;
+  width: 100%;
+}
+input[type="text"]:focus, textarea:focus {
+  border-color: var(--brand-green);
+  box-shadow: 0 0 0 4px rgba(34,197,94,0.12);
+  outline: none;
+}
+
+/* Buttons */
+button, #submit-report { background-color: var(--brand-green); color: #fff; font-weight: 600; border-radius: .75rem; padding: .75rem 1rem; transition: background-color .15s ease; }
+button:hover, #submit-report:hover { background-color: var(--brand-green-600); }
+
+/* Upload area */
+.upload-container {
+  border: 2px dashed #bbf7d0;
+  border-radius: .75rem;
+  padding: 1rem;
+  background-color: rgba(220,252,231,0.7);
+  text-align: center;
+  cursor: pointer;
+}
+.upload-container:hover { border-color: var(--brand-green); }
+
+/* small tweaks */
+label { color: var(--text-dark); font-weight: 500; }
+input[type="checkbox"] { accent-color: #f87171; }
+
+/* --- FEED CARD IMAGE INJECTION (CSS-only) --- */
+/* We use selectors that target direct children of #feed-container to avoid changing other .bg-white usages site-wide. */
+/* Each feed card (created by your JS) is a top-level div inside #feed-container. We hide the internal <img> and set the card container background. */
+
+/* Make feed card containers image-friendly */
+#feed-container > div {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  min-height: 260px;            /* keeps consistent card height */
+  background-color: transparent !important;  /* override .bg-white background for feed cards */
+}
+
+/* Hide the generated <img> inside each card (we use the container background instead) */
+#feed-container > div img {
+  display: none !important;
+}
+
+/* White overlay panel at the bottom for text readability */
+#feed-container > div > .p-4 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(255,255,255,0.98));
+  padding: 1rem;
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+}
+
+/* Gentle image overlay for subtle darkening so text is readable */
+#feed-container > div::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background: linear-gradient(180deg, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0.24) 100%);
+  pointer-events: none;
+}
+
+/* Specific images per card (maps to your mockData order) */
+/* 1. Pothole */
+#feed-container > div:nth-child(1) {
+  background-image: url("https://www.hindustantimes.com/ht-img/img/2023/12/04/550x309/Uttar-Pradesh-on-top-with-55-4--deaths--File-photo_1701719100896.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+/* 2. Streetlight */
+#feed-container > div:nth-child(2) {
+  background-image: url("https://filecenter.deltaww.com/products/images/202309210950481205001.JPG?w=350");
+  background-size: cover;
+  background-position: center;
+}
+
+/* 3. Garbage */
+#feed-container > div:nth-child(3) {
+  background-image: url("https://media.istockphoto.com/id/1697146194/photo/a-pile-of-garbage-in-indian-road.jpg?s=612x612&w=0&k=20&c=sERL5_ZVFENjwSrJAHYElx7ybyjVHJGMfcPoelLCc_g=");
+  background-size: cover;
+  background-position: center;
+}
+
+/* 4. Faded crosswalk */
+#feed-container > div:nth-child(4) {
+  background-image: url("https://img.freepik.com/premium-photo/cracked-asphalt-showing-through-faded-white-crosswalk-paint_661495-102183.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+/* 5. Broken bench */
+#feed-container > div:nth-child(5) {
+  background-image: url("https://live.staticflickr.com/6011/5927269997_e719c36df4_b.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+/* 6. Leaking hydrant */
+#feed-container > div:nth-child(6) {
+  background-image: url("https://mustsharenews.com/wp-content/uploads/2024/12/little-india-water-1.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+/* Make sure text remains readable on small screens */
+@media (max-width: 640px) {
+  #feed-container > div { min-height: 200px; }
+  #feed-container > div > .p-4 { padding: .75rem; }
+}
+
+/* --- MAP IMAGE REPLACEMENT --- */
+/* Replace the placeholder map image (the <img> inside #user-map-container) with the supplied image using the container background. */
+#user-map-container {
+  background-image: url("https://miro.medium.com/0*x4L4vCqPxkaaDrjQ.jpg");
+  background-size: cover;
+  background-position: center;
+  border-radius: 1rem;
+  overflow: hidden;
+  position: relative;
+}
+
+/* hide the existing <img> overlay to avoid doublestacking */
+#user-map-container img { display: none !important; }
+
+/* ensure pins and popups still sit above the map */
+#user-map-container .map-pin, #user-map-container .map-popup { z-index: 40; }
+
+/* --- Leaderboard / My Issues / other surfaces --- */
+/* Maintain your card look for other areas: adjust spacing */
+#my-issues-list .bg-white, #leaderboard-list .bg-white, .surface { padding: 0; }
+
+/* Keep chart container responsive (from original styles) */
+.chart-container {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  height: 300px;
+  max-height: 400px;
+}
+@media (min-width: 768px) {
+  .chart-container { height: 350px; }
+}
+
+/* Footer spacing */
+footer { padding: 2rem 0; text-align: center; color: #d1fae5; }
+
+/* Accessibility: focus outlines for keyboard users */
+a:focus, button:focus, input:focus, textarea:focus { outline: 3px solid rgba(34,197,94,0.18); outline-offset: 2px; }
+
+/* End of replacement CSS */
+
 
     </style>
 </head>
