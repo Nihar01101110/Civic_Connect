@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Civic Issue Reporting</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+  <nav class="flex justify-center items-center px-6 py-4 shadow-md bg-white fixed w-full top-0 z-50">
+    <div class="text-3xl md:text-4xl font-extrabold">
+      <span class="text-green-600">Civic</span><span class="text-slate-700">Connect</span>
+    </div>
+  </nav>
+
+  <section class="relative h-[90vh] flex items-center justify-center bg-cover bg-center mt-16" 
+    style="background-image: url('https://imgs.search.brave.com/cWbZqVBlXbdvHMk6VCJ5fic9RTGetLrAgciWmenVLNk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/dGhlbmF0dXJlb2Zj/aXRpZXMuY29tL1RO/T0Mvd3AtY29udGVu/dC91cGxvYWRzLzIw/MTgvMDcvUGhvdG8t/MTktNzk5eDU2MC5q/cGc');">
+    <div class="bg-black/40 absolute inset-0"></div>
+    <div class="relative z-10 text-center text-white max-w-2xl">
+      <h1 class="text-4xl md:text-6xl font-bold leading-tight">Together for a Cleaner City</h1>
+      <p class="mt-4 text-lg md:text-xl">Report civic issues like potholes, garbage, broken streetlights, and contribute to a greener tomorrow.</p>
+      <div class="flex gap-4 justify-center mt-8 flex-wrap">
+        <a href="user_auth.html" class="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg shadow-lg text-lg font-semibold">👤 I am a Citizen</a>
+        <a href="admin_auth.html" class="bg-slate-800 hover:bg-slate-900 px-6 py-3 rounded-lg shadow-lg text-lg font-semibold">🛠️ I am an Admin</a>
+      </div>
+    </div>
+  </section>
+  <section class="py-16 px-6 md:px-20 bg-white">
+    <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Why Use Our Platform?</h2>
+    <div class="grid md:grid-cols-3 gap-10 text-center">
+      <div class="p-6 bg-green-50 rounded-2xl shadow hover:shadow-lg transition">
+        <img src="https://cdn-icons-png.flaticon.com/512/3097/3097144.png" alt="Report Issue" class="w-20 mx-auto mb-4">
+        <h3 class="text-xl font-semibold mb-2">Issue Reporting</h3>
+        <p class="text-slate-600 text-left">Upload issue with photo/video + description + location. Connect Instagram/Facebook/Twitter. Duplicate detection & anonymous reporting. Emergency tagging & AI categorization.</p>
+      </div>
+
+      <div class="p-6 bg-green-50 rounded-2xl shadow hover:shadow-lg transition">
+        <img src="https://cdn-icons-png.flaticon.com/512/679/679720.png" alt="Voting System" class="w-20 mx-auto mb-4">
+        <h3 class="text-xl font-semibold mb-2">Voting & Escalation</h3>
+        <p class="text-slate-600 text-left">Issues with ≤10 reports → sent directly to municipality. Issues with 10+ votes → auto-escalated to govt dashboard. Prevents spam & ensures priority issues reach govt.</p>
+      </div>
+
+      <div class="p-6 bg-green-50 rounded-2xl shadow hover:shadow-lg transition">
+        <img src="https://cdn-icons-png.flaticon.com/512/7542/7542885.png" alt="Issue Tracking" class="w-20 mx-auto mb-4">
+        <h3 class="text-xl font-semibold mb-2">Issue Tracking & Notifications</h3>
+        <p class="text-slate-600 text-left">Complaint ID generated for each issue. Track status: Pending → In Progress → Resolved. Reporter & voters get notified. Citizen satisfaction survey included.</p>
+      </div>
+
+      <div class="p-6 bg-green-50 rounded-2xl shadow hover:shadow-lg transition">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="User Profile" class="w-20 mx-auto mb-4">
+        <h3 class="text-xl font-semibold mb-2">User Profile & Gamification</h3>
+        <p class="text-slate-600 text-left">Points & leaderboards: Report = points, Resolved = bonus. Ranks: Citizen → Hero → Champion. Badges & rewards integration (vouchers, metro passes).</p>
+      </div>
+
+      <div class="p-6 bg-green-50 rounded-2xl shadow hover:shadow-lg transition">
+        <img src="https://cdn-icons-png.flaticon.com/512/860/860814.png" alt="Community Engagement" class="w-20 mx-auto mb-4">
+        <h3 class="text-xl font-semibold mb-2">Community Engagement</h3>
+        <p class="text-slate-600 text-left">Local feed showing issues nearby. Like, comment, share, vote, repost. Top trending issues & citizen challenges with AR preview of resolved issues.</p>
+      </div>
+      <div class="p-6 bg-slate-100 rounded-2xl shadow hover:shadow-lg transition">
+        <img src="https://cdn-icons-png.flaticon.com/512/2838/2838912.png" alt="Admin Dashboard" class="w-20 mx-auto mb-4">
+        <h3 class="text-xl font-semibold mb-2">Live Dashboard & Issue Management</h3>
+        <p class="text-slate-600 text-left">Map view with Pending/In Progress/Resolved pins. Filters: area, urgency, category. Assign issues & track municipal workers. Crisis mode for disasters.</p>
+      </div>
+
+      <div class="p-6 bg-slate-100 rounded-2xl shadow hover:shadow-lg transition">
+        <img src="https://cdn-icons-png.flaticon.com/512/1688/1688988.png" alt="Analytics" class="w-20 mx-auto mb-4">
+        <h3 class="text-xl font-semibold mb-2">Analytics & Insights</h3>
+        <p class="text-slate-600 text-left">Area analysis, top reporters, municipality rankings, AI predictions for recurring problems, budget suggestions, and insights for faster resolutions.</p>
+      </div>
+
+      <div class="p-6 bg-slate-100 rounded-2xl shadow hover:shadow-lg transition">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Transparency" class="w-20 mx-auto mb-4">
+        <h3 class="text-xl font-semibold mb-2">Transparency & Rewards</h3>
+        <p class="text-slate-600 text-left">Public leaderboard of municipalities, auto-post resolved issues on social media, best municipality awards, fastest resolver badges, and competitions.</p>
+      </div>
+
+    </div>
+    <div class="mt-16 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-8">System Roles</h2>
+      <div class="grid md:grid-cols-2 gap-8">
+
+        <div class="p-6 bg-green-100 rounded-2xl shadow hover:shadow-lg transition">
+          <h3 class="text-xl font-semibold mb-2">User</h3>
+          <p class="text-slate-700 text-left">Gamer  + Reporter  + Contributor <br>
+          Plays with points & leaderboards, reports & tracks issues, contributes by voting/reposting.</p>
+        </div>
+
+        <div class="p-6 bg-slate-200 rounded-2xl shadow hover:shadow-lg transition">
+          <h3 class="text-xl font-semibold mb-2">Admin</h3>
+          <p class="text-slate-700 text-left">Manager  + Analyst  + Competitor <br>
+          Manages staff, analyzes area/citizen/municipality trends, competes with other municipalities.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  <section class="py-20 px-6 md:px-20 bg-slate-50 flex flex-col md:flex-row items-center gap-10">
+    <div class="md:w-1/2">
+      <img src="https://images.unsplash.com/photo-1508873535684-277a3cbcc4e0?auto=format&fit=crop&w=900&q=80" 
+           alt="Clean City" class="rounded-2xl shadow-lg">
+    </div>
+    <div class="md:w-1/2">
+      <h2 class="text-3xl font-bold mb-4">Be the Change in Your Neighborhood</h2>
+      <p class="text-slate-600 mb-6">CivicConnect empowers citizens to actively participate in making their cities better. From reporting waste and potholes to fixing broken lights, every action helps create a cleaner, safer, and greener environment.</p>
+      <a href="#" class="bg-green-600 text-white px-6 py-3 rounded-lg shadow hover:bg-green-700">Learn More</a>
+    </div>
+  </section>
+  <footer class="bg-slate-800 text-white py-8 text-center">
+    <p class="mb-4">Follow Us</p>
+    <div class="flex justify-center space-x-6 text-xl mb-4">
+      <a href="#" class="hover:text-green-400">🌐</a>
+      <a href="#" class="hover:text-green-400">🐦</a>
+      <a href="#" class="hover:text-green-400">📘</a>
+      <a href="#" class="hover:text-green-400">📷</a>
+    </div>
+    <p class="text-sm">&copy; 2025 CivicConnect. All Rights Reserved.</p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Administrator Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: url('https://resize.indiatvnews.com/en/resize/newbucket/1200_-/2019/09/parliament-1569588867.jpg') no-repeat center center fixed;
+    background-size: cover; 
+    color: #065f46; 
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(255, 255, 255, 0.129); /* light overlay */
+    z-index: -1;
+}
+
+.admin-tab-content { display: none; }
+.admin-tab-content.active { display: block; }
+
+.tab-btn.active {
+    border-color: #22c55e; 
+    color: #22c55e;
+    font-weight: 600;
+}
+.tab-btn {
+    transition: all 0.2s ease;
+}
+.tab-btn:hover {
+    border-color: #4ade80;
+    color: #16a34a;
+}
+
+header {
+    background-color: rgba(34,197,94,0.85);
+    color: #f0fdf4;
+}
+header h1 {
+    color: #f0fdf4;
+}
+header a {
+    color: #f0fdf4;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+header a:hover {
+    color: #bbf7d0;
+}
+
+.map-pin {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid rgb(171, 112, 112);
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.map-pin:hover {
+    transform: translate(-50%, -50%) scale(1.5);
+    box-shadow: 0 0 6px rgba(0,0,0,0.2);
+}
+.map-popup {
+    max-width: 220px;
+    z-index: 40;
+    background-color: #ffffff;
+    border-radius: 1rem;
+    padding: 0.75rem 1rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    font-size: 0.875rem;
+    color: #065f46;
+}
+
+.bg-white {
+    background-color: #ffffff !important;
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+.bg-white:hover {
+    box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+}
+
+input[type="text"], textarea, select {
+    background-color: #dcfce7;
+    border: 1px solid #bbf7d0;
+    color: #065f46;
+    border-radius: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+input[type="text"]:focus, textarea:focus, select:focus {
+    border-color: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+    outline: none;
+}
+
+button, .assign-btn {
+    background-color: #22c55e;
+    color: #ffffff;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    transition: all 0.2s ease;
+}
+button:hover, .assign-btn:hover {
+    background-color: #16a34a;
+}
+
+label {
+    color: #065f46;
+    font-weight: 500;
+}
+
+#admin-map-container {
+    background-color: #bbf7d0;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    height: 300px;
+    max-height: 400px;
+}
+@media (min-width:768px) {
+    .chart-container { height: 350px; }
+}
+
+#pending-list div, #progress-list div, #completed-list div {
+    background-color: #f9fafb;
+    border-left: 4px solid transparent;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    transition: all 0.2s ease;
+}
+#pending-list div:hover { border-left-color: #ef4444; }
+#progress-list div:hover { border-left-color: #f59e0b; }
+#completed-list div:hover { border-left-color: #10b981; }
+
+#insights-container .bg-white {
+    border-radius: 1.5rem;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+#insights-container .bg-white:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+}
+#insights-container img {
+    width: 100%;
+    height: 9rem;
+    object-fit: cover;
+}
+
+.assign-select {
+    border: 1px solid #bbf7d0;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+}
+.assign-select:focus {
+    outline: none;
+    border-color: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+}
+
+footer {
+    padding: 2rem 0;
+    text-align: center;
+    color: #065f46;
+}
+footer a:hover { color: #22c55e; }
+
+
+</style>
+
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
+
+
+    <header class="bg-white shadow-md sticky top-0 z-10">
+        <nav class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-slate-700">Administrator Dashboard</h1>
+            <a href="index.html" class="text-slate-600 hover:text-orange-500">Logout</a>
+        </nav>
+
+        <div class="border-b border-slate-200">
+            <div class="container mx-auto px-4 flex space-x-4">
+                <button class="admin-tab-btn tab-btn py-3 px-2 text-sm font-medium text-slate-500 border-b-2 border-transparent hover:border-slate-300 hover:text-slate-700 active" data-target="admin-tab-live-dashboard">Live Dashboard</button>
+                <button class="admin-tab-btn tab-btn py-3 px-2 text-sm font-medium text-slate-500 border-b-2 border-transparent hover:border-slate-300 hover:text-slate-700" data-target="admin-tab-analytics">Analytics</button>
+                <button class="admin-tab-btn tab-btn py-3 px-2 text-sm font-medium text-slate-500 border-b-2 border-transparent hover:border-slate-300 hover:text-slate-700" data-target="admin-tab-community-insights">Community Insights</button>
+                <button class="admin-tab-btn tab-btn py-3 px-2 text-sm font-medium text-slate-500 border-b-2 border-transparent hover:border-slate-300 hover:text-slate-700" data-target="admin-tab-worker-management">Assign Workers</button>
+            </div>
+        </div>
+    </header>
+
+
+    <main class="container mx-auto p-4 md:p-6 flex-1">
+        <!-- Live Dashboard -->
+        <section id="admin-tab-live-dashboard" class="admin-tab-content active">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2">
+                    <h2 class="text-2xl font-bold mb-4">Live Issue Map</h2>
+                    <div class="bg-white p-4 rounded-xl shadow-lg">
+                        <div id="admin-map-container" class="relative w-full h-96 bg-slate-200 rounded-lg overflow-hidden">
+                            <img src="https://placehold.co/1200x800/e2e8f0/64748b?text=City+Map+View" class="w-full h-full object-cover opacity-50" alt="city map">
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold mb-4">Task Lists</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="font-bold text-red-500 mb-2">Pending (<span id="pending-count">0</span>)</h3>
+                            <div id="pending-list" class="space-y-2 max-h-48 overflow-y-auto"></div>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-yellow-500 mb-2">In Progress (<span id="progress-count">0</span>)</h3>
+                            <div id="progress-list" class="space-y-2 max-h-48 overflow-y-auto"></div>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-green-500 mb-2">Completed (<span id="completed-count">0</span>)</h3>
+                            <div id="completed-list" class="space-y-2 max-h-48 overflow-y-auto"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="admin-tab-analytics" class="admin-tab-content">
+            <h2 class="text-2xl font-bold mb-6">System Analytics & Insights</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="text-lg font-semibold mb-4">Issues by Area</h3>
+                    <div class="chart-container">
+                        <canvas id="areaIssuesChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="text-lg font-semibold mb-4">Issue Resolution Time (Days)</h3>
+                    <div class="chart-container">
+                        <canvas id="resolutionTimeChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="text-lg font-semibold mb-4">Reported Issue Types</h3>
+                    <div class="chart-container">
+                        <canvas id="issueTypesChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="text-lg font-semibold mb-2">AI Predictions</h3>
+                    <p class="text-sm text-slate-500 mb-4">Forecasting based on historical data.</p>
+                    <ul class="space-y-3">
+                        <li class="p-3 bg-slate-100 rounded-md">📈 Increased reports of potholes expected in 'Downtown' next month due to weather patterns.</li>
+                        <li class="p-3 bg-slate-100 rounded-md">💡 Recurring streetlight outages detected in the 'North Park' area. Suggests infrastructure review.</li>
+                        <li class="p-3 bg-slate-100 rounded-md">💰 Budget allocation of +15% recommended for waste management in 'Southside' to handle seasonal increase.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="admin-tab-community-insights" class="admin-tab-content">
+            <h2 class="text-2xl font-bold mb-1">Community Insights</h2>
+            <p class="text-slate-500 mb-6">Identify trending issues that have high community engagement but are not yet assigned.</p>
+            <div id="insights-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </section>
+
+        <section id="admin-tab-worker-management" class="admin-tab-content">
+            <h2 class="text-2xl font-bold mb-6">Assign Workers to Pending Issues</h2>
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+                <div id="assignment-list" class="space-y-4"></div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+
+        const mockData = {
+            issues: [
+                { id: 1, user: 'CitizenJane', title: 'Large pothole on Elm Street', description: 'A danger to cyclists and cars.', votes: 15, status: 'Pending', category: 'Pothole', location: { x: 25, y: 40 }, image: 'https://placehold.co/600x400/cccccc/64748b?text=Pothole' },
+                { id: 2, user: 'StreetSavior', title: 'Streetlight out at Oak & Pine', description: 'It has been out for 3 days now, very dark at night.', votes: 8, status: 'In Progress', category: 'Streetlight', location: { x: 50, y: 60 }, image: 'https://placehold.co/600x400/cccccc/64748b?text=Broken+Light' },
+                { id: 3, user: 'GreenThumb', title: 'Overflowing garbage can in Central Park', description: 'The bins near the playground are full and attracting pests.', votes: 22, status: 'Pending', category: 'Garbage', location: { x: 70, y: 30 }, image: 'https://placehold.co/600x400/cccccc/64748b?text=Overflowing+Bin' },
+                { id: 4, user: 'CommuterCarl', title: 'Faded crosswalk markings', description: 'The crosswalk at the busy intersection of 1st and Main is barely visible.', votes: 5, status: 'Completed', category: 'Other', location: { x: 10, y: 80 }, image: 'https://placehold.co/600x400/cccccc/64748b?text=Faded+Crosswalk' },
+                { id: 5, user: 'Anonymous', title: 'Broken park bench', description: 'A bench near the pond is broken and has splinters.', votes: 3, status: 'Completed', category: 'Other', location: { x: 85, y: 55 }, image: 'https://placehold.co/600x400/cccccc/64748b?text=Broken+Bench' },
+                { id: 6, user: 'WaterWatcher', title: 'Leaking fire hydrant', description: 'Water has been pooling for hours at corner of 5th and Maple.', votes: 18, status: 'In Progress', category: 'Other', location: { x: 35, y: 75 }, image: 'https://placehold.co/600x400/cccccc/64748b?text=Leaking+Hydrant' },
+            ],
+            workers: ['Maintenance Team A', 'Parks Dept Crew', 'Electrical Unit 3', 'Road Works Team B']
+        };
+
+        const statusColors = { 'Pending': 'red', 'In Progress': 'yellow', 'Completed': 'green' };
+        let chartsInitialized = false;
+        let charts = {};
+
+
+        function showAdminTab(targetId) {
+
+            document.querySelectorAll('.admin-tab-content').forEach(s => s.classList.remove('active'));
+
+            const el = document.getElementById(targetId);
+            if (el) el.classList.add('active');
+
+
+            document.querySelectorAll('.admin-tab-btn').forEach(btn => btn.classList.remove('active'));
+            const btn = document.querySelector(`.admin-tab-btn[data-target="${targetId}"]`);
+            if (btn) btn.classList.add('active');
+
+
+            if (targetId === 'admin-tab-live-dashboard') {
+                renderAdminDashboard();
+                renderAdminMap();
+            } else if (targetId === 'admin-tab-analytics') {
+                if (!chartsInitialized) initAdminCharts();
+            } else if (targetId === 'admin-tab-community-insights') {
+                renderCommunityInsights();
+            } else if (targetId === 'admin-tab-worker-management') {
+                renderAssignmentList();
+            }
+        }
+
+        function renderAdminDashboard() {
+            const lists = {
+                'Pending': document.getElementById('pending-list'),
+                'In Progress': document.getElementById('progress-list'),
+                'Completed': document.getElementById('completed-list'),
+            };
+            const counts = {
+                'Pending': document.getElementById('pending-count'),
+                'In Progress': document.getElementById('progress-count'),
+                'Completed': document.getElementById('completed-count'),
+            };
+            
+            Object.values(lists).forEach(l => l.innerHTML = '');
+
+            
+            mockData.issues.forEach(issue => {
+                const container = lists[issue.status];
+                if (!container) return;
+                const item = document.createElement('div');
+                item.className = 'bg-white p-2 rounded-md shadow-sm text-sm';
+                item.innerHTML = `<p class="font-semibold">${escapeHtml(issue.title)}</p><p class="text-slate-500 text-xs">${escapeHtml(issue.category)} - ${issue.votes} votes</p>`;
+                container.appendChild(item);
+            });
+
+            
+            for (const status in counts) {
+                const count = mockData.issues.filter(i => i.status === status).length;
+                counts[status].textContent = count;
+            }
+        }
+
+
+        function renderAdminMap() {
+            const container = document.getElementById('admin-map-container');
+            
+            container.querySelectorAll('.map-pin, .map-popup').forEach(n => n.remove());
+            mockData.issues.forEach(issue => {
+                const pin = document.createElement('div');
+                const color = statusColors[issue.status] || 'gray';
+                pin.className = `map-pin bg-${color}-500`;
+                pin.style.left = `${issue.location.x}%`;
+                pin.style.top = `${issue.location.y}%`;
+                pin.title = `${issue.title} (${issue.status})`;
+                pin.addEventListener('click', () => {
+                    
+                    container.querySelectorAll('.map-popup').forEach(p => p.remove());
+                    const popup = document.createElement('div');
+                    popup.className = 'map-popup absolute bg-white p-3 rounded shadow-lg text-sm';
+                    popup.style.left = `${issue.location.x}%`;
+                    popup.style.top = `${issue.location.y + 4}%`;
+                    popup.style.transform = 'translate(-50%, 0)';
+                    popup.innerHTML = `<strong>${escapeHtml(issue.title)}</strong><div class="text-slate-600 text-xs">${escapeHtml(issue.description)}</div><div class="mt-1 text-xs text-slate-500">Status: ${escapeHtml(issue.status)}</div>`;
+                    container.appendChild(popup);
+                    setTimeout(() => popup.remove(), 6000);
+                });
+                container.appendChild(pin);
+            });
+        }
+        function createInsightCard(issue) {
+            return `
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <img src="${issue.image}" alt="${escapeHtml(issue.title)}" class="w-full h-36 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg">${escapeHtml(issue.title)}</h3>
+                        <p class="text-slate-600 text-sm mb-2">Reported by: ${escapeHtml(issue.user)}</p>
+                        <p class="text-slate-500 text-sm mb-4">${escapeHtml(issue.description)}</p>
+                        <div class="flex justify-between items-center">
+                            <div class="text-slate-600 text-sm">Votes: ${issue.votes}</div>
+                            <div class="text-xs font-semibold px-2 py-1 rounded-full bg-${statusColors[issue.status]}-100 text-${statusColors[issue.status]}-700">${issue.status}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCommunityInsights() {
+            const container = document.getElementById('insights-container');
+            const trendingIssues = mockData.issues
+                .filter(issue => issue.status === 'Pending' && issue.votes > 10)
+                .sort((a, b) => b.votes - a.votes);
+            if (trendingIssues.length > 0) {
+                container.innerHTML = trendingIssues.map(createInsightCard).join('');
+            } else {
+                container.innerHTML = '<p class="text-slate-500 col-span-full">No high-priority pending issues found.</p>';
+            }
+        }
+        function renderAssignmentList() {
+            const container = document.getElementById('assignment-list');
+            const pendingIssues = mockData.issues.filter(i => i.status === 'Pending');
+            if (pendingIssues.length === 0) {
+                container.innerHTML = '<p class="text-slate-500">No pending issues to assign.</p>';
+                return;
+            }
+            container.innerHTML = pendingIssues.map(issue => {
+                return `
+                    <div class="flex flex-col md:flex-row items-start md:items-center justify-between p-4 border border-slate-200 rounded-lg">
+                        <div>
+                            <p class="font-bold">${escapeHtml(issue.title)}</p>
+                            <p class="text-sm text-slate-500">${escapeHtml(issue.category)} | ${issue.votes} Votes</p>
+                        </div>
+                        <div class="flex items-center mt-2 md:mt-0">
+                            <select data-id="${issue.id}" class="assign-select text-sm rounded-md border-slate-300 focus:ring-orange-400 focus:border-orange-400">
+                                <option value="">Assign to...</option>
+                                ${mockData.workers.map(w => `<option value="${escapeHtml(w)}">${escapeHtml(w)}</option>`).join('')}
+                            </select>
+                            <button data-id="${issue.id}" class="ml-2 assign-btn bg-orange-400 text-white text-sm font-semibold py-2 px-3 rounded-md hover:bg-orange-500">Assign</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            container.querySelectorAll('.assign-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = Number(btn.dataset.id);
+                    const select = container.querySelector(`select[data-id="${id}"]`);
+                    const team = select.value;
+                    if (!team) { alert('Choose a team to assign'); return; }
+                    const issue = mockData.issues.find(i => i.id === id);
+                    if (issue) {
+                        issue.status = 'In Progress';
+                        issue.assignedTo = team;
+                        alert(`Assigned "${issue.title}" to ${team} (demo).`);
+                        renderAdminDashboard();
+                        renderAssignmentList();
+                        renderAdminMap();
+                    }
+                });
+            });
+        }
+        function initAdminCharts() {
+            const areaCtx = document.getElementById('areaIssuesChart')?.getContext('2d');
+            if (areaCtx) {
+                charts.area = new Chart(areaCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Downtown', 'North Park', 'Southside', 'West End', 'The Heights'],
+                        datasets: [{
+                            label: '# of Issues',
+                            data: [28, 19, 35, 15, 22],
+                            backgroundColor: 'rgba(251, 146, 60, 0.6)',
+                            borderColor: 'rgba(251, 146, 60, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: { responsive:true, maintainAspectRatio:false, scales: { y: { beginAtZero:true } } }
+                });
+            }
+
+            const resCtx = document.getElementById('resolutionTimeChart')?.getContext('2d');
+            if (resCtx) {
+                charts.res = new Chart(resCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan','Feb','Mar','Apr','May','Jun'],
+                        datasets: [{
+                            label: 'Average Resolution Time (Days)',
+                            data: [4.5,4.2,3.8,3.9,3.5,3.2],
+                            fill:false,
+                            borderColor: 'rgb(74,85,104)',
+                            tension: 0.1
+                        }]
+                    },
+                    options: { responsive:true, maintainAspectRatio:false }
+                });
+            }
+
+            const typesCtx = document.getElementById('issueTypesChart')?.getContext('2d');
+            if (typesCtx) {
+                charts.types = new Chart(typesCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Pothole','Streetlight','Garbage','Other'],
+                        datasets: [{
+                            label: 'Issue Types',
+                            data: [40,25,20,15],
+                            backgroundColor: [
+                                'rgba(251,146,60,0.7)',
+                                'rgba(252,211,77,0.7)',
+                                'rgba(168,85,247,0.7)',
+                                'rgba(100,116,139,0.7)'
+                            ],
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: { responsive:true, maintainAspectRatio:false }
+                });
+            }
+
+            chartsInitialized = true;
+        }
+
+        // --- Utilities ---
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const target = btn.dataset.target;
+                    if (target) showAdminTab(target);
+                });
+            });
+            showAdminTab('admin-tab-live-dashboard');
+            renderAdminDashboard();
+            renderAdminMap();
+        });
+
+    </script>
+</body>
+</html>

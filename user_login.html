@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Citizen Login / Sign Up | CivicConnect</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-green-50 min-h-screen flex items-center justify-center p-4">
+
+  <div class="w-full max-w-md text-center">
+    <!-- Card -->
+    <div class="bg-white p-8 rounded-3xl shadow-xl relative">
+      
+      <div class="flex justify-start mb-6">
+        <a href="index.html" class="text-green-700 font-semibold hover:text-green-900">&larr; Back</a>
+      </div>
+
+
+      <h2 class="text-3xl font-bold text-green-800 mb-8">Citizen Login / Sign Up</h2>
+      
+      <form action="user_dashbord.html" method="get" class="space-y-4">
+
+        <input type="email" placeholder="Email" class="w-full p-3 border border-green-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600" required>
+        
+
+        <input type="password" placeholder="Password" class="w-full p-3 border border-green-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600" required>
+        
+
+        <button type="submit" class="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-700 shadow-lg transition">
+          Login
+        </button>
+      </form>
+
+      <p class="text-slate-600 mt-6">Don’t have an account?</p>
+      <a href="user_dashbord.html" class="mt-2 inline-block bg-green-100 text-green-800 font-bold py-2 px-4 rounded-lg hover:bg-green-200 transition">
+        Create Account
+      </a>
+    </div>
+  </div>
+
+</body>
+</html>
