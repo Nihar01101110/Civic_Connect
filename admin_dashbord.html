@@ -10,8 +10,8 @@
 
 body {
     font-family: 'Inter', sans-serif;
-    background: url('https://resize.indiatvnews.com/en/resize/newbucket/1200_-/2019/09/parliament-1569588867.jpg') no-repeat center center fixed;
-    background-size: cover; 
+    /* background: url('https://resize.indiatvnews.com/en/resize/newbucket/1200_-/2019/09/parliament-1569588867.jpg') no-repeat center center fixed;
+    background-size: cover;  */
     color: #065f46; 
     min-height: 100vh;
     margin: 0;
@@ -190,6 +190,28 @@ footer {
     color: #065f46;
 }
 footer a:hover { color: #22c55e; }
+/* ✅ Map background image */
+#admin-map-container {
+    background: url("https://www.team-bhp.com/forum/attachments/street-experiences/2339693d1659088005-google-street-view-now-available-india-street-view-how-activate.png") 
+        no-repeat center center;
+    background-size: cover;
+}
+
+/* ✅ Replace issue card images by category */
+
+/* Pothole issue image */
+#insights-container img[alt*="pothole" i],
+#insights-container img[alt*="Pothole" i] {
+    content: url("https://lawlex.org/wp-content/uploads/2020/07/Pothole.jpg");
+}
+
+/* Overflowing garbage bin image */
+#insights-container img[alt*="bin" i],
+#insights-container img[alt*="Garbage" i],
+#insights-container img[alt*="Overflowing" i] {
+    content: url("https://media.newindianexpress.com/TNIE/import/2018/8/6/original/UGD_works.jpg?w=1200&h=675&auto=format%2Ccompress&fit=max&enlarge=true");
+}
+
 
 
 </style>
